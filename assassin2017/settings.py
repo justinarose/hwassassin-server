@@ -20,12 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1nmuf(ic$p4&t)ib=cf$6y&1&k85ffk+aj93n4^@mwdz!qlo4e'
+with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEVELOPMENT', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'hwassassin.hwtechcouncil.com', '127.0.0.1', '66.175.223.106']
 
 
 # Application definition
@@ -121,6 +122,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 
 # Media files
@@ -137,3 +139,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
+
+# Override production variables if DJANGO_DEVELOPMENT env variable is set
+if DEBUG:
+
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = '1nmuf(ic$p4&t)ib=cf$6y&1&k85ffk+aj93n4^@mwdz!qlo4e'
+
+    ALLOWED_HOSTS = []
