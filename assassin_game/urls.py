@@ -10,7 +10,7 @@ router.register(r'statuses', views.UserGameStatusViewSet)
 router.register(r'likes', views.LikeViewSet)
 router.register(r'comments', views.CommentViewSet)
 router.register(r'comment-likes', views.CommentLikeViewSet)
-#router.register(r'badges', views.BadgeViewSet)
+router.register(r'badges', views.BadgeViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
