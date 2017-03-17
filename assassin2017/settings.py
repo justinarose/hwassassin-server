@@ -147,4 +147,4 @@ if DEBUG:
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = '1nmuf(ic$p4&t)ib=cf$6y&1&k85ffk+aj93n4^@mwdz!qlo4e'
 
-    ALLOWED_HOSTS = []
+    #ALLOWED_HOSTS = []
