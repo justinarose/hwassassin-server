@@ -23,13 +23,13 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
         user = request.user
 
         if not user.is_authenticated():
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"Error": "User is not authenticated"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         if game.status != 'r':
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"Error": "Game isn't in registration status"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         existing = UserGameStatus.objects.filter(user=user, game=game)
-        statuses = UserGameStatus.objects.all()
+        statuses = UserGameStatus.objects.filter(game=game)
         if existing.count() > 0:
             print('User already joined game')
             res = UserGameStatusSerializer(existing.first(), context={'request': request})
