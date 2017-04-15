@@ -57,6 +57,7 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_fields = ['username']
 
 
 # almost done (make sure corner case stuff like posting/verifying twice is good)
