@@ -64,7 +64,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    filter_fields = ['poster', 'killed', 'game']
+    filter_fields = ['poster', 'killed', 'game', 'status']
 
     @detail_route(methods=['post'])
     def verify(self, request, pk=None):
