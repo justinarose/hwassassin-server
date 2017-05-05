@@ -146,6 +146,10 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
 
         killed = user_status.target
         stat = 'p'
+        existing = Post.objects.filter(poster=user, killed=killed, status=stat)
+        if existing.count() > 0:
+            raise ValidationError('Previous kill still pending')
+
         killed_status = UserGameStatus.objects.filter(user=killed, game=game).first()
         killed_status.status = 'p'
         killed_status.save()
