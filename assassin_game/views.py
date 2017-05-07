@@ -129,7 +129,7 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
             return Response({"Error": "User hasn't liked post"}, status=status.HTTP_409_CONFLICT)
         else:
             existing.delete()
-            return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(existing, status=status.HTTP_202_ACCEPTED)
 
     def perform_create(self, serializer):
         user = self.request.user
