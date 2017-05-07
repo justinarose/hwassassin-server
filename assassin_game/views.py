@@ -105,11 +105,11 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         user = request.user
 
         if not user.is_authenticated():
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"Error": "User is not authenticated"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         existing = Like.objects.filter(post=post, liker=user)
         if existing.count() > 0:
-            return Response(status=status.HTTP_409_CONFLICT)
+            return Response({"Error": "User already liked post"}, status=status.HTTP_409_CONFLICT)
         else:
             like = Like.objects.create(post=post, liker=user)
             res = LikeSerializer(like)
@@ -121,12 +121,12 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         user = request.user
 
         if not user.is_authenticated():
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"Error": "User is not authenticated"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         existing = Like.objects.filter(post=post, liker=user)
 
         if existing.count() == 0:
-            return Response(status=status.HTTP_409_CONFLICT)
+            return Response({"Error": "User hasn't liked post"}, status=status.HTTP_409_CONFLICT)
         else:
             existing.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
