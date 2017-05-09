@@ -25,7 +25,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'post_video', 'post_thumbnail_image', 'caption', 'status', 'time_confirmed', 'poster', 'killed',
-                  'game')
+                  'game', 'longitude', 'latitude')
 
 
 class UserGameStatusSerializer(serializers.ModelSerializer):
