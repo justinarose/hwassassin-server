@@ -33,6 +33,8 @@ class Post(models.Model):
     post_video = models.FileField(upload_to='post_videos/')
     post_thumbnail_image = models.ImageField(upload_to='post_thumbnail_image/')
     caption = models.TextField(default="")
+    latitude = models.FloatField(default=34.140808)
+    longitude = models.FloatField(default=-118.412303)
 
     POST_STATUS_CHOICE = (
         ('p', "Pending"),
