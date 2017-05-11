@@ -96,6 +96,25 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.username)
+        instance.last_name = validated_data.get('last_name', instance.username)
+        instance.password = validated_data.get('password', instance.username)
+        instance.email = validated_data.get('email', instance.username)
+
+
+        player_data = validated_data.pop('player')
+        player = Player.objects.get(user=instance)
+        player.year = player_data.get('year', player.year)
+        player.profile_picture = player_data.get('profile_picture', player.profile_picture)
+
+        instance.save()
+        player.save()
+
+        return instance
+
+
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password', 'player',)
