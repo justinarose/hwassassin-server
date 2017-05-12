@@ -74,13 +74,14 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         if not user.is_authenticated() or user != post.killed:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            poster_status = UserGameStatus.objects.filter(user=post.poster, game=post.game).first()
+            #poster_status = UserGameStatus.objects.filter(user=post.poster, game=post.game).first()
+            has_killed_status = UserGameStatus.objects.filter(target=user, game=post.game, status='a').first()
             killed_status = UserGameStatus.objects.filter(user=user, game=post.game).first()
-            poster_status.target = killed_status.target
+            has_killed_status.target = killed_status.target
             killed_status.status = 'd'
             post.status = 'v'
             post.time_confirmed = timezone.now()
-            poster_status.save()
+            has_killed_status.save()
             killed_status.save()
             post.save()
             res = PostSerializer(post)
