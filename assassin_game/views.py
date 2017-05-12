@@ -71,7 +71,7 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         post = self.get_object()
         user = request.user
 
-        if not user.is_authenticated() or not user.is_staff():
+        if not user.is_authenticated() or not user.is_staff:
             return Response({"Error": "User is not an admin"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         elif post.status != 'c':
             return Response({"Error": "Post is not conflicting"}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -89,7 +89,7 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         post = self.get_object()
         user = request.user
 
-        if not user.is_authenticated() or not user.is_staff():
+        if not user.is_authenticated() or not user.is_staff:
             return Response({"Error": "User is not an admin"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         elif post.status != 'c':
             return Response({"Error": "Post is not conflicting"}, status=status.HTTP_406_NOT_ACCEPTABLE)
