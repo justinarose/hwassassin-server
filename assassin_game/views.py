@@ -67,6 +67,50 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
     filter_fields = ['poster', 'killed', 'game', 'status']
 
     @detail_route(methods=['post'])
+    def admin_deny(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+
+        if not user.is_authenticated() or not user.is_staff():
+            return Response({"Error": "User is not an admin"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        elif post.status != 'c':
+            return Response({"Error": "Post is not conflicting"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            killed_status = UserGameStatus.objects.filter(user=post.killed, game=post.game).first()
+            killed_status.status = 'a'
+            killed_status.save()
+            post.status = 'd'
+            post.save()
+            res = PostSerializer(post)
+            return Response(res.data, status=status.HTTP_202_ACCEPTED)
+
+    @detail_route(methods=['post'])
+    def admin_verify(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+
+        if not user.is_authenticated() or not user.is_staff():
+            return Response({"Error": "User is not an admin"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        elif post.status != 'c':
+            return Response({"Error": "Post is not conflicting"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            has_killed_status = UserGameStatus.objects.filter(target=post.killed, game=post.game, status='a').first()
+            if has_killed_status is None:
+                has_killed_status = UserGameStatus.objects.filter(target=post.killed, game=post.game, status='p').first()
+            killed_status = UserGameStatus.objects.filter(user=post.killed, game=post.game).first()
+            has_killed_status.target = killed_status.target
+            killed_status.status = 'd'
+            post.status = 'v'
+            post.time_confirmed = timezone.now()
+            has_killed_status.save()
+            killed_status.save()
+            post.save()
+            res = PostSerializer(post)
+            return Response(res.data, status=status.HTTP_202_ACCEPTED)
+
+
+
+    @detail_route(methods=['post'])
     def verify(self, request, pk=None):
         post = self.get_object()
         user = request.user
