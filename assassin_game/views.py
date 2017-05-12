@@ -144,7 +144,7 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
         if user_status is None or user_status.status != 'a':
             raise ValidationError('You are not alive')
         if game.status != 'p':
-            raise ValidationError('The game is not in progress')
+            raise ValidationError('The game has not started')
 
         killed = user_status.target
         stat = 'p'
