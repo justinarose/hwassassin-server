@@ -24,7 +24,7 @@ with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # os.environ.get('DJANGO_DEVELOPMENT', False)
+DEBUG = os.environ.get('DJANGO_DEVELOPMENT', False)
 ALLOWED_HOSTS = ['localhost', 'hwassassin.hwtechcouncil.com', '127.0.0.1', '66.175.223.106']
 
 
