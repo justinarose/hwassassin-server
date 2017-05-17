@@ -120,3 +120,14 @@ class Badge(models.Model):
 
     def __str__(self):
         return "%s (Game %s): %s" % (self.type, self.game.id, self.type)
+
+
+class Report(models.Model):
+    post = models.ForeignKey(Post, related_name="reports", on_delete=models.CASCADE)
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "%s reported Post %s" % (self.reporter, self.post.id)
+
+    class Meta:
+        unique_together = ('reporter', 'post',)

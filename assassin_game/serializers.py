@@ -1,4 +1,4 @@
-from assassin_game.models import Player, Game, Post, Like, Comment, CommentLike, UserGameStatus, Badge
+from assassin_game.models import Player, Game, Post, Like, Comment, CommentLike, UserGameStatus, Badge, Report
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -74,6 +74,15 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         fields = ('id', 'comment', 'liker')
 
 
+class ReportSerializer(serializers.ModelSerializer):
+    post = serializers.PrimaryKeyRelatedField(many=False, read_only=False, queryset=Post.objects.all())
+    reporter = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+
+    class Meta:
+        model = Report
+        fields = ('id', 'post', 'reporter')
+
+
 class UserSerializer(serializers.ModelSerializer):
     player = PlayerSerializer(required=True)
     password = serializers.CharField(write_only=True)
@@ -103,7 +112,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.password = validated_data.get('password', instance.password)
         instance.email = validated_data.get('email', instance.email)
 
-
         player_data = validated_data.pop('player')
         player = Player.objects.get(user=instance)
         player.year = player_data.get('year', player.year)
@@ -113,7 +121,6 @@ class UserSerializer(serializers.ModelSerializer):
         player.save()
 
         return instance
-
 
     class Meta:
         model = User

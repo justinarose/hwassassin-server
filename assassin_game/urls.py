@@ -11,6 +11,7 @@ router.register(r'likes', views.LikeViewSet)
 router.register(r'comments', views.CommentViewSet)
 router.register(r'comment-likes', views.CommentLikeViewSet)
 router.register(r'badges', views.BadgeViewSet)
+router.register(r'reports', views.ReportViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

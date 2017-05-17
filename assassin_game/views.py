@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from assassin_game.models import Game, Post, UserGameStatus, Like, Comment, CommentLike, Badge
+from assassin_game.models import Game, Post, UserGameStatus, Like, Comment, CommentLike, Badge, Report
 from assassin_game.serializers import (GameSerializer, UserSerializer, PostSerializer, UserGameStatusSerializer,
-                                       LikeSerializer, CommentSerializer, CommentLikeSerializer, BadgeSerializer)
+                                       LikeSerializer, CommentSerializer, CommentLikeSerializer, BadgeSerializer,
+                                       ReportSerializer)
 from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.decorators import detail_route
@@ -180,6 +181,22 @@ class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retriev
             existing.delete()
             return Response(res.data, status=status.HTTP_202_ACCEPTED)
 
+    @detail_route(methods=['post'])
+    def report(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+
+        if not user.is_authenticated():
+            return Response({"Error": "User is not authenticated"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        existing = Report.objects.filter(post=post, reporter=user)
+        if existing.count() > 0:
+            return Response({"Error": "User already reported post"}, status=status.HTTP_409_CONFLICT)
+        else:
+            report = Report.objects.create(post=post, reporter=user)
+            res = ReportSerializer(report)
+            return Response(res.data, status=status.HTTP_202_ACCEPTED)
+
     def perform_create(self, serializer):
         user = self.request.user
 
@@ -217,6 +234,15 @@ class LikeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     filter_fields = ['post', 'liker']
+
+    def perform_create(self, serializer):
+        serializer.save(liker=self.request.user)
+
+
+class ReportViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+    filter_fields = ['post', 'reporter']
 
     def perform_create(self, serializer):
         serializer.save(liker=self.request.user)
